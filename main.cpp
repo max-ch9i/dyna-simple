@@ -47,10 +47,13 @@ enum DIRE
   UP
 };
 
+#define SLAIN 0x1
+
 class Character
 {
   XY pos;
   int speed = 1;
+  unsigned char state = 0x0;
 
   public:
     Character(XY starting_position):pos(starting_position)
@@ -60,6 +63,9 @@ class Character
 
     void move(DIRE dir)
     {
+      if (state & SLAIN)
+        return;
+
       XY next_pos(pos);
 
       switch (dir)
@@ -90,10 +96,8 @@ class Character
 
       OBJECT next_tile = tile_at(map, map_width, next_pos);
 
-      if (next_tile != _)
-      {
+      if (!is_valid_tile(next_tile))
         return;
-      }
 
       pos = next_pos;
     }
@@ -102,6 +106,27 @@ class Character
     {
       cout << pos.x << ":" << pos.y << endl;
     }
+
+    bool check_collision_with(Character* ch)
+    {
+      return ch->pos.x == pos.x && ch->pos.y == pos.y;
+    }
+
+    void slay()
+    {
+      state |= SLAIN;
+    }
+
+    void report()
+    {
+      if (state & SLAIN)
+        cout << "I'm slain" << endl;
+      else
+        cout << "I'm healthy." << endl;
+    }
+
+  private:
+    virtual bool is_valid_tile(OBJECT tile) = 0;
 };
 
 class Dyna : public Character
@@ -112,17 +137,59 @@ class Dyna : public Character
 
     };
 
+  private:
+    bool is_valid_tile(OBJECT tile)
+    {
+      return tile == _;
+    }
 };
+
+class Balloon : public Character
+{
+  public:
+    Balloon(XY starting_position):Character(starting_position)
+    {
+
+    };
+
+  private:
+    bool is_valid_tile(OBJECT tile)
+    {
+      return tile == _;
+    }
+};
+
+void check_collisions(Character** critters, int critter_num, Dyna* d)
+{
+  for (int i = 0; i < critter_num; ++i)
+  {
+    if (d->check_collision_with(critters[i]))
+    {
+      d->slay();
+      break;
+    }
+  }
+}
 
 int main()
 {
-  Dyna dyna(XY{0,2});
+  Dyna dyna(XY{0,3});
+  Balloon balloon(XY{2,0});
+
+  const int critter_num = 1;
+  Character* critters[critter_num] = {&balloon};
 
   int tick = 0;
   while (tick < 10)
   {
-    dyna.move(DOWN);
+    dyna.move(UP);
+    balloon.move(LEFT);
+
+    check_collisions(critters, critter_num, &dyna);
+
+    dyna.OutPos();
+    balloon.OutPos();
+    dyna.report();
     ++tick;
   }
-  dyna.OutPos();
 }
