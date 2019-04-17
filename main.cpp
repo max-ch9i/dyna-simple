@@ -49,19 +49,72 @@ win_init(win_t *win)
     XMapWindow(win->dpy, win->win);
 }
 
-static void
-win_deinit(win_t *win)
+#define TILE_WIDTH 100
+
+enum class COLOUR
 {
-    XDestroyWindow(win->dpy, win->win);
-}
-
-
+  RED,
+  GREEN,
+  BLUE,
+  GREY,
+  BROWN,
+  WHITE,
+  ORANGE
+};
 
 struct XY
 {
   int x;
   int y;
 };
+
+
+void win_choose_colour(cairo_t* cr, COLOUR c)
+{
+  switch(c)
+  {
+    case COLOUR::GREEN:
+      cairo_set_source_rgb(cr, 0, 1, 0);
+      break;
+    case COLOUR::RED:
+      cairo_set_source_rgb(cr, 1, 0, 0);
+      break;
+    case COLOUR::GREY:
+      cairo_set_source_rgb(cr, .2, .2, .2);
+      break;
+    case COLOUR::BLUE:
+      cairo_set_source_rgb(cr, 0, 0, 1);
+      break;
+    case COLOUR::BROWN:
+      cairo_set_source_rgb(cr, 1, 0, 1);
+      break;
+    case COLOUR::WHITE:
+      cairo_set_source_rgb(cr, 1, 1, 1);
+      break;
+    case COLOUR::ORANGE:
+      cairo_set_source_rgb(cr, .5, .5, 1);
+      break;
+  }
+}
+
+struct DrawSquareAt
+{
+  cairo_t* cr;
+  DrawSquareAt(cairo_t* c):cr(c){};
+  void draw(const COLOUR& colour, const XY& pos) { 
+    win_choose_colour(cr, colour);
+    cairo_rectangle(cr, pos.x * TILE_WIDTH,  pos.y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
+    cairo_fill (cr);
+  };
+};
+
+typedef void (DrawSquareAt::*DrawProc)(const COLOUR& colour, const XY& pos);
+
+static void
+win_deinit(win_t *win)
+{
+    XDestroyWindow(win->dpy, win->win);
+}
 
 enum OBJECT
 {
@@ -110,6 +163,7 @@ class Character
 
   protected:
     XY pos;
+    COLOUR draw_colour = COLOUR::WHITE;
 
   public:
     Character(XY starting_position):pos(starting_position)
@@ -171,6 +225,11 @@ class Character
     bool check_collision_with_coord(const XY& _p) const
     {
       return _p.x == pos.x && _p.y == pos.y;
+    }
+
+    void draw(DrawSquareAt* context) const
+    {
+      context->draw(draw_colour, pos);
     }
 
     void slay()
@@ -308,7 +367,7 @@ class Dyna : public Character
   public:
     Dyna(XY starting_position):Character(starting_position)
     {
-
+      draw_colour = COLOUR::WHITE;
     };
 
     /**
@@ -335,7 +394,7 @@ class Balloon : public Character
   public:
     Balloon(XY starting_position):Character(starting_position)
     {
-
+      draw_colour = COLOUR::ORANGE;
     };
 
   private:
@@ -384,6 +443,14 @@ class Game
           ++it;
       }
     }
+    
+    void draw_critters(DrawSquareAt* draw)
+    {
+      for (const Character* c : critters)
+      {
+        c->draw(draw);
+      }
+    }
 
   private:
     void check_critter_collisions()
@@ -417,43 +484,6 @@ class Game
       }
     }
 };
-
-#define TILE_WIDTH 100
-
-enum class COLOUR
-{
-  RED,
-  GREEN,
-  BLUE,
-  GREY,
-  BROWN,
-  WHITE
-};
-
-void win_choose_colour(cairo_t* cr, COLOUR c)
-{
-  switch(c)
-  {
-    case COLOUR::GREEN:
-      cairo_set_source_rgb(cr, 0, 1, 0);
-      break;
-    case COLOUR::RED:
-      cairo_set_source_rgb(cr, 1, 0, 0);
-      break;
-    case COLOUR::GREY:
-      cairo_set_source_rgb(cr, .2, .2, .2);
-      break;
-    case COLOUR::BLUE:
-      cairo_set_source_rgb(cr, 0, 0, 1);
-      break;
-    case COLOUR::BROWN:
-      cairo_set_source_rgb(cr, 1, 0, 1);
-      break;
-    case COLOUR::WHITE:
-      cairo_set_source_rgb(cr, 1, 1, 1);
-      break;
-  }
-}
 
 static void win_draw(win_t *win, Game* game)
 {
@@ -490,9 +520,12 @@ static void win_draw(win_t *win, Game* game)
       }
       cairo_rectangle(cr, x * TILE_WIDTH,  y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
       cairo_fill (cr);
-
     }
   }
+
+  // All critters
+  DrawSquareAt draw_at(cr);
+  game->draw_critters(&draw_at);
 }
 
 
