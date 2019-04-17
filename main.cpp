@@ -6,7 +6,56 @@
 #include <stdlib.h>
 #include <memory>
 
+#include <cairo/cairo.h>
+#include <cairo/cairo-xlib.h>
+
 using namespace std;
+
+#define PI 3.1415926535
+
+typedef struct win {
+    Display *dpy;
+    int scr;
+
+    Window win;
+    GC gc;
+
+    int width, height;
+    KeyCode quit_code;
+} win_t;
+
+static void
+win_init(win_t *win)
+{
+    Window root;
+
+    win->width = 400;
+    win->height = 400;
+
+    root = DefaultRootWindow(win->dpy);
+    win->scr = DefaultScreen(win->dpy);
+
+    win->win = XCreateSimpleWindow(win->dpy, root, 0, 0,
+				   win->width, win->height, 0,
+				   BlackPixel(win->dpy, win->scr), BlackPixel(win->dpy, win->scr));
+
+    win->quit_code = XKeysymToKeycode(win->dpy, XStringToKeysym("Q"));
+
+    XSelectInput(win->dpy, win->win,
+		 KeyPressMask
+		 |StructureNotifyMask
+		 |ExposureMask);
+
+    XMapWindow(win->dpy, win->win);
+}
+
+static void
+win_deinit(win_t *win)
+{
+    XDestroyWindow(win->dpy, win->win);
+}
+
+
 
 struct XY
 {
@@ -369,8 +418,94 @@ class Game
     }
 };
 
+#define TILE_WIDTH 100
+
+enum class COLOUR
+{
+  RED,
+  GREEN,
+  BLUE,
+  GREY,
+  BROWN,
+  WHITE
+};
+
+void win_choose_colour(cairo_t* cr, COLOUR c)
+{
+  switch(c)
+  {
+    case COLOUR::GREEN:
+      cairo_set_source_rgb(cr, 0, 1, 0);
+      break;
+    case COLOUR::RED:
+      cairo_set_source_rgb(cr, 1, 0, 0);
+      break;
+    case COLOUR::GREY:
+      cairo_set_source_rgb(cr, .2, .2, .2);
+      break;
+    case COLOUR::BLUE:
+      cairo_set_source_rgb(cr, 0, 0, 1);
+      break;
+    case COLOUR::BROWN:
+      cairo_set_source_rgb(cr, 1, 0, 1);
+      break;
+    case COLOUR::WHITE:
+      cairo_set_source_rgb(cr, 1, 1, 1);
+      break;
+  }
+}
+
+static void win_draw(win_t *win, Game* game)
+{
+  cairo_surface_t *surface;
+  cairo_t *cr;
+  Visual *visual = DefaultVisual(win->dpy, DefaultScreen(win->dpy));
+
+  surface = cairo_xlib_surface_create (win->dpy, win->win, visual, 500, 500);
+  cr = cairo_create(surface);
+
+  cairo_set_source_rgb(cr, 1, 1, 1);
+  cairo_paint (cr);
+
+  // Draw map
+  for (int y = 0; y < map_height; ++y)
+  {
+    for (int x = 0; x < map_width; ++x)
+    {
+      OBJECT tile = map[y * map_width + x];
+      switch(tile)
+      {
+        case _:
+          win_choose_colour(cr, COLOUR::GREEN);
+          break;
+        case W:
+          win_choose_colour(cr, COLOUR::GREY);
+          break;
+        case D:
+          win_choose_colour(cr, COLOUR::BROWN);
+          break;
+        case B:
+          win_choose_colour(cr, COLOUR::BROWN);
+          break;
+      }
+      cairo_rectangle(cr, x * TILE_WIDTH,  y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
+      cairo_fill (cr);
+
+    }
+  }
+}
+
+
 int main()
 {
+  win_t win;
+
+  win.dpy = XOpenDisplay(0);
+
+  win_init(&win);
+
+  
+  
   Dyna dyna(XY{0,3});
   Balloon balloon(XY{2,0});
 
@@ -378,27 +513,76 @@ int main()
   game.add_critter(&balloon);
 
   int tick = 0;
-  while (tick < 10)
+  bool quit = false;
+  XEvent xev;
+  KeyCode quit_code = XKeysymToKeycode(win.dpy, XStringToKeysym("Q"));
+  KeyCode right_code = XKeysymToKeycode(win.dpy, XStringToKeysym("D"));
+  KeyCode left_code = XKeysymToKeycode(win.dpy, XStringToKeysym("S"));
+  KeyCode up_code = XKeysymToKeycode(win.dpy, XStringToKeysym("W"));
+  KeyCode down_code = XKeysymToKeycode(win.dpy, XStringToKeysym("A"));
+  KeyCode crack_code = XKeysymToKeycode(win.dpy, XStringToKeysym("F"));
+  
+  win_draw(&win, &game);
+  while (true)
   {
-    dyna.move(UP);
+    if (quit)
+    {
+      break;
+    }
     balloon.move(LEFT);
 
-    if (tick == 1)
-    {
-      XY cracker_pos;
-      bool cracker_available = dyna.place_cracker(cracker_pos);
-      if (cracker_available)
-      {
-        game.add_cracker(cracker_pos);
-      }
+    XNextEvent(win.dpy, &xev);
+    switch(xev.type) {
+      case KeyPress:
+        {
+          XKeyEvent *kev = &xev.xkey;
+
+          if (kev->keycode == quit_code) {
+            quit = true;
+          }
+          else if (kev->keycode == right_code) {
+            dyna.move(RIGHT);
+          }
+          else if (kev->keycode == left_code) {
+            dyna.move(LEFT);
+          }
+          else if (kev->keycode == up_code) {
+            dyna.move(UP);
+          }
+          else if (kev->keycode == down_code) {
+            dyna.move(DOWN);
+          }
+          else if (kev->keycode == crack_code) {
+            XY cracker_pos;
+            bool cracker_available = dyna.place_cracker(cracker_pos);
+            if (cracker_available)
+            {
+              game.add_cracker(cracker_pos);
+            }
+          }
+        }
+        break;
+      case Expose:
+        {
+          XExposeEvent *eev = &xev.xexpose;
+
+          if (eev->count == 0)
+            ;
+        }
+        break;
     }
 
     game.tick_crackers();
     game.check_collisions();
 
-    dyna.OutPos();
-    balloon.OutPos();
-    dyna.report();
+    // dyna.OutPos();
+    // balloon.OutPos();
+    // dyna.report();
     ++tick;
+    win_draw(&win, &game);
   }
+
+  win_deinit(&win);
+
+  XCloseDisplay(win.dpy);
 }
