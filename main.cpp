@@ -119,6 +119,11 @@ class Character
       return ch->pos.x == pos.x && ch->pos.y == pos.y;
     }
 
+    bool check_collision_with_coord(const XY& _p) const
+    {
+      return _p.x == pos.x && _p.y == pos.y;
+    }
+
     void slay()
     {
       state |= SLAIN;
@@ -154,6 +159,16 @@ class Cracker : public Character
     {
       handle_timeout();
       handle_explode();
+    }
+
+    bool blast_collides_with(const Character* p) const
+    {
+      for (const XY& c : blast_cells)
+      {
+        if (p->check_collision_with_coord(c))
+          return true;
+      }
+      return false;
     }
 
     bool is_gone()
@@ -305,6 +320,7 @@ class Game
     void check_collisions()
     {
       check_critter_collisions();
+      check_cracker_collisions();
     }
 
     void tick_crackers()
@@ -329,6 +345,25 @@ class Game
         {
           dyna->slay();
           break;
+        }
+      }
+    }
+    void check_cracker_collisions()
+    {
+      for (const Cracker& cracker : crackers)
+      {
+        for (auto it = critters.begin(); it != critters.end();)
+        {
+          if (cracker.blast_collides_with(*it)) {
+            (*it)->slay();
+            it = critters.erase(it);
+          }
+          else
+            ++it;
+        }
+        if (cracker.blast_collides_with(dyna))
+        {
+          dyna->slay();
         }
       }
     }
