@@ -29,8 +29,8 @@ win_init(win_t *win)
 {
     Window root;
 
-    win->width = 400;
-    win->height = 400;
+    win->width = 500;
+    win->height = 500;
 
     root = DefaultRootWindow(win->dpy);
     win->scr = DefaultScreen(win->dpy);
@@ -451,6 +451,11 @@ class Game
         c->draw(draw);
       }
     }
+    void draw_dyna(DrawSquareAt* draw)
+    {
+
+      dyna->draw(draw);
+    }
 
   private:
     void check_critter_collisions()
@@ -491,11 +496,13 @@ static void win_draw(win_t *win, Game* game)
   cairo_t *cr;
   Visual *visual = DefaultVisual(win->dpy, DefaultScreen(win->dpy));
 
+  XClearWindow(win->dpy, win->win);
+
   surface = cairo_xlib_surface_create (win->dpy, win->win, visual, 500, 500);
   cr = cairo_create(surface);
 
   cairo_set_source_rgb(cr, 1, 1, 1);
-  cairo_paint (cr);
+  cairo_paint(cr);
 
   // Draw map
   for (int y = 0; y < map_height; ++y)
@@ -526,6 +533,11 @@ static void win_draw(win_t *win, Game* game)
   // All critters
   DrawSquareAt draw_at(cr);
   game->draw_critters(&draw_at);
+  game->draw_dyna(&draw_at);
+
+  cairo_destroy(cr);
+  cairo_surface_destroy(surface);
+  XFlush(win->dpy);
 }
 
 
@@ -536,7 +548,6 @@ int main()
   win.dpy = XOpenDisplay(0);
 
   win_init(&win);
-
   
   
   Dyna dyna(XY{0,3});
@@ -550,19 +561,18 @@ int main()
   XEvent xev;
   KeyCode quit_code = XKeysymToKeycode(win.dpy, XStringToKeysym("Q"));
   KeyCode right_code = XKeysymToKeycode(win.dpy, XStringToKeysym("D"));
-  KeyCode left_code = XKeysymToKeycode(win.dpy, XStringToKeysym("S"));
+  KeyCode left_code = XKeysymToKeycode(win.dpy, XStringToKeysym("A"));
   KeyCode up_code = XKeysymToKeycode(win.dpy, XStringToKeysym("W"));
-  KeyCode down_code = XKeysymToKeycode(win.dpy, XStringToKeysym("A"));
+  KeyCode down_code = XKeysymToKeycode(win.dpy, XStringToKeysym("S"));
   KeyCode crack_code = XKeysymToKeycode(win.dpy, XStringToKeysym("F"));
   
-  win_draw(&win, &game);
   while (true)
   {
     if (quit)
     {
       break;
     }
-    balloon.move(LEFT);
+    // balloon.move(LEFT);
 
     XNextEvent(win.dpy, &xev);
     switch(xev.type) {
@@ -593,6 +603,11 @@ int main()
               game.add_cracker(cracker_pos);
             }
           }
+
+          game.tick_crackers();
+          game.check_collisions();
+          ++tick;
+          win_draw(&win, &game);
         }
         break;
       case Expose:
@@ -600,20 +615,12 @@ int main()
           XExposeEvent *eev = &xev.xexpose;
 
           if (eev->count == 0)
-            ;
+            win_draw(&win, &game);
         }
         break;
     }
-
-    game.tick_crackers();
-    game.check_collisions();
-
-    // dyna.OutPos();
-    // balloon.OutPos();
-    // dyna.report();
-    ++tick;
-    win_draw(&win, &game);
   }
+  cout << tick << endl;
 
   win_deinit(&win);
 
