@@ -99,6 +99,8 @@ static void win_draw(win_t *win, Game* game)
   XFlush(win->dpy);
 }
 
+#include <chrono>
+
 
 int main()
 {
@@ -131,13 +133,15 @@ int main()
     {
       break;
     }
-    // balloon.move(LEFT);
 
     XNextEvent(win.dpy, &xev);
     switch(xev.type) {
       case KeyPress:
         {
           XKeyEvent *kev = &xev.xkey;
+
+          auto start = std::chrono::high_resolution_clock::now();
+
 
           if (kev->keycode == quit_code) {
             quit = true;
@@ -166,6 +170,12 @@ int main()
           game.tick_crackers();
           game.check_collisions();
           ++tick;
+
+          auto end = std::chrono::high_resolution_clock::now();
+          auto dur = end - start;
+          auto i_micro = std::chrono::duration_cast<std::chrono::microseconds>(dur);
+          cout << "Turn took " << i_micro.count() << "μs" << endl;
+
           win_draw(&win, &game);
         }
         break;
@@ -179,7 +189,7 @@ int main()
         break;
     }
   }
-  cout << tick << endl;
+  cout << "Total number of ticks: " << tick << endl;
 
   win_deinit(&win);
 

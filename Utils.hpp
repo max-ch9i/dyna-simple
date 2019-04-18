@@ -75,9 +75,9 @@ struct DrawSquareAt
 };
 
 
-static const int map_width = 5;
-static const int map_height = 5;
-static const OBJECT map[map_width * map_height] = {
+const int map_width = 5;
+const int map_height = 5;
+const OBJECT map[map_width * map_height] = {
 	  _,   _,   _,   _,   D,
 	  _,   W,   _,   W,   _,
 	  _,   D,   _,   _,   _,
