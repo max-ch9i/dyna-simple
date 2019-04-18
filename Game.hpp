@@ -32,6 +32,7 @@ class Game
   private:
     void check_critter_collisions();
     void check_cracker_collisions();
+    void check_wall_collisions();
 };
 
 #endif /* end of include guard: GAME_H */

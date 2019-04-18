@@ -50,6 +50,10 @@ enum OBJECT
 
 #define TILE_WIDTH 100
 
+extern const int map_width;
+extern const int map_height;
+extern OBJECT* map;
+
 void win_choose_colour(cairo_t* cr, COLOUR c);
 
 typedef struct win {
@@ -74,17 +78,12 @@ struct DrawSquareAt
   };
 };
 
-
-const int map_width = 5;
-const int map_height = 5;
-const OBJECT map[map_width * map_height] = {
-	  _,   _,   _,   _,   D,
-	  _,   W,   _,   W,   _,
-	  _,   D,   _,   _,   _,
-	  _,   W,   D,   W,   _,
-	  _,   _,   _,   _,   _,
-};
-
 OBJECT tile_at(const OBJECT* map_mat, int map_width, XY coord);
+
+typedef void (*MapProc)(const XY&);
+
+void swap_tile_to(OBJECT* map_mat, int map_width, const XY& p, OBJECT swap_to);
+
+void incinerate_wall_at(const XY& p);
 
 #endif /* end of include guard: UTILS_H */

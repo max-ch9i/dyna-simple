@@ -19,6 +19,7 @@ class Cracker : public Character
   unsigned char state = TIMEOUT;
   int timer = 0;
   int blast = 0;
+  SPREAD spread;
   std::vector<XY> blast_cells;
 
   public:
@@ -27,6 +28,7 @@ class Cracker : public Character
     void tick();
 
     bool blast_collides_with(const Character* p) const;
+    void blast_collide_(MapProc p) const;
 
     bool is_gone();
 

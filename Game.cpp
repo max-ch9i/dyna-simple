@@ -18,6 +18,7 @@ void Game::check_collisions()
 {
   check_critter_collisions();
   check_cracker_collisions();
+  check_wall_collisions();
 }
 
 void Game::tick_crackers()
@@ -81,5 +82,12 @@ void Game::check_cracker_collisions()
     {
       dyna->slay();
     }
+  }
+}
+void Game::check_wall_collisions()
+{
+  for (const Cracker& cracker : crackers)
+  {
+    cracker.blast_collide_(incinerate_wall_at);
   }
 }
