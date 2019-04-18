@@ -20,7 +20,7 @@ class Character
     bool check_collision_with(const Character* ch);
     bool check_collision_with_coord(const XY& _p) const;
     virtual void draw(DrawSquareAt* context) const;
-    void slay();
+    virtual void slay();
     void report();
 
   private:

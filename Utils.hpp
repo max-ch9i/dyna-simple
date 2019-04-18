@@ -12,7 +12,8 @@ enum class COLOUR
   GREY,
   BROWN,
   WHITE,
-  ORANGE
+  ORANGE,
+  BLACK
 };
 
 struct XY

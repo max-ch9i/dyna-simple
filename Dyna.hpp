@@ -12,6 +12,7 @@ class Dyna : public Character
      * @return {XY} position to put the cracker on
      */
     bool place_cracker(XY& p);
+    void slay();
 
   private:
     bool is_valid_tile(OBJECT tile);

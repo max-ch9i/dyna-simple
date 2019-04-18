@@ -17,6 +17,12 @@ bool Dyna::place_cracker(XY& p)
   return true;
 }
 
+void Dyna::slay()
+{
+  Character::slay();
+  draw_colour = COLOUR::BLACK;
+}
+
 bool Dyna::is_valid_tile(OBJECT tile)
 {
   return tile == _;

@@ -22,6 +22,9 @@ void win_choose_colour(cairo_t* cr, COLOUR c)
     case COLOUR::WHITE:
       cairo_set_source_rgb(cr, 1, 1, 1);
       break;
+    case COLOUR::BLACK:
+      cairo_set_source_rgb(cr, 0, 0, 0);
+      break;
     case COLOUR::ORANGE:
       cairo_set_source_rgb(cr, .5, .5, 1);
       break;
