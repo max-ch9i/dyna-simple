@@ -5,6 +5,13 @@
 #include <vector>
 #include "Character.hpp"
 
+#define SPREAD_W 0x1
+#define SPREAD_E 0x2
+#define SPREAD_N 0x4
+#define SPREAD_S 0x8
+
+typedef unsigned char SPREAD;
+
 class Cracker : public Character
 {
   static const int timeout = 2;

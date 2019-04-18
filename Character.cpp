@@ -29,7 +29,7 @@ void Character::move(DIRE dir)
   }
 
   // Check map boundaries
-  if (next_pos.x > map_width || next_pos.y > map_height)
+  if (next_pos.x >= map_width || next_pos.y >= map_height)
   {
     return;
   }

@@ -107,8 +107,8 @@ int main()
   win.dpy = XOpenDisplay(0);
 
   win_init(&win);
-  
-  
+
+
   Dyna dyna(XY{0,3});
   Balloon balloon(XY{2,0});
 
@@ -123,8 +123,8 @@ int main()
   KeyCode left_code = XKeysymToKeycode(win.dpy, XStringToKeysym("A"));
   KeyCode up_code = XKeysymToKeycode(win.dpy, XStringToKeysym("W"));
   KeyCode down_code = XKeysymToKeycode(win.dpy, XStringToKeysym("S"));
-  KeyCode crack_code = XKeysymToKeycode(win.dpy, XStringToKeysym("F"));
-  
+  KeyCode crack_code = XKeysymToKeycode(win.dpy, XStringToKeysym("J"));
+
   while (true)
   {
     if (quit)

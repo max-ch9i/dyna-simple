@@ -79,6 +79,8 @@ void Cracker::handle_explode()
 }
 void Cracker::update_blast()
 {
+  SPREAD spread = (SPREAD_W | SPREAD_E | SPREAD_N | SPREAD_S);
+
   // Update the blast cells
   // For every direction
   blast_cells.clear();
@@ -88,28 +90,39 @@ void Cracker::update_blast()
   {
     // North
     XY pos_next{pos.x,pos.y - i};
-    if (pos_next.y >= 0 && _ == tile_at(map, map_width, pos_next))
+    if ((spread & SPREAD_N) && pos_next.y >= 0 && _ == tile_at(map, map_width, pos_next))
     {
       blast_cells.push_back(pos_next);
     }
+    else
+      spread &= ~SPREAD_N;
+
     // South
     pos_next = {pos.x,pos.y + i};
-    if (pos_next.y < map_height && _ == tile_at(map, map_width, pos_next))
+    if ((spread & SPREAD_S) && pos_next.y < map_height && _ == tile_at(map, map_width, pos_next))
     {
       blast_cells.push_back(pos_next);
     }
+    else
+      spread &= ~SPREAD_S;
+
     // West
     pos_next = {pos.x-i,pos.y};
-    if (pos_next.x >= 0 && _ == tile_at(map, map_width, pos_next))
+    if ((spread & SPREAD_W) && pos_next.x >= 0 && _ == tile_at(map, map_width, pos_next))
     {
       blast_cells.push_back(pos_next);
     }
+    else
+      spread &= ~SPREAD_W;
+
     // East
     pos_next = {pos.x+i,pos.y};
-    if (pos_next.x < map_width && _ == tile_at(map, map_width, pos_next))
+    if ((spread & SPREAD_E) && pos_next.x < map_width && _ == tile_at(map, map_width, pos_next))
     {
       blast_cells.push_back(pos_next);
     }
+    else
+      spread &= ~SPREAD_E;
   }
 }
 bool Cracker::is_valid_tile(OBJECT tile)
