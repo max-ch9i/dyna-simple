@@ -16,19 +16,19 @@ void win_choose_colour(cairo_t* cr, COLOUR c)
   switch(c)
   {
     case COLOUR::GREEN:
-      cairo_set_source_rgb(cr, 0, 1, 0);
+      cairo_set_source_rgb(cr, .12, .84, 0);
       break;
     case COLOUR::RED:
-      cairo_set_source_rgb(cr, 1, 0, 0);
+      cairo_set_source_rgb(cr, .94, .18, .23);
       break;
     case COLOUR::GREY:
-      cairo_set_source_rgb(cr, .2, .2, .2);
+      cairo_set_source_rgb(cr, .85, .85, .85);
       break;
     case COLOUR::BLUE:
-      cairo_set_source_rgb(cr, 0, 0, 1);
+      cairo_set_source_rgb(cr, .29, .44, 1);
       break;
     case COLOUR::BROWN:
-      cairo_set_source_rgb(cr, 1, 0, 1);
+      cairo_set_source_rgb(cr, .97, .65, .09);
       break;
     case COLOUR::WHITE:
       cairo_set_source_rgb(cr, 1, 1, 1);
@@ -37,7 +37,7 @@ void win_choose_colour(cairo_t* cr, COLOUR c)
       cairo_set_source_rgb(cr, 0, 0, 0);
       break;
     case COLOUR::ORANGE:
-      cairo_set_source_rgb(cr, .5, .5, 1);
+      cairo_set_source_rgb(cr, 1, .32, 0);
       break;
   }
 }

@@ -2,7 +2,7 @@
 
 Balloon::Balloon(XY starting_position):Character(starting_position)
 {
-  draw_colour = COLOUR::ORANGE;
+  draw_colour = COLOUR::BLUE;
 };
 
 bool Balloon::is_valid_tile(OBJECT tile)
