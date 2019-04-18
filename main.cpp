@@ -227,7 +227,7 @@ class Character
       return _p.x == pos.x && _p.y == pos.y;
     }
 
-    void draw(DrawSquareAt* context) const
+    virtual void draw(DrawSquareAt* context) const
     {
       context->draw(draw_colour, pos);
     }
@@ -261,6 +261,7 @@ class Cracker : public Character
   public:
     Cracker(XY starting_position):Character(starting_position)
     {
+      draw_colour = COLOUR::RED;
     };
 
     void tick()
@@ -282,6 +283,22 @@ class Cracker : public Character
     bool is_gone()
     {
       return state == GONE;
+    }
+
+    void draw(DrawSquareAt* context) const
+    {
+      switch (state)
+      {
+        case TIMEOUT:
+          context->draw(draw_colour, pos);
+          break;
+        case EXPLODING:
+          for (const XY& c : blast_cells)
+          {
+            context->draw(draw_colour, c);
+          }
+          break;
+      }
     }
 
   private:
@@ -451,6 +468,13 @@ class Game
         c->draw(draw);
       }
     }
+    void draw_crackers(DrawSquareAt* draw)
+    {
+      for (const Cracker& c : crackers)
+      {
+        c.draw(draw);
+      }
+    }
     void draw_dyna(DrawSquareAt* draw)
     {
 
@@ -534,6 +558,7 @@ static void win_draw(win_t *win, Game* game)
   DrawSquareAt draw_at(cr);
   game->draw_critters(&draw_at);
   game->draw_dyna(&draw_at);
+  game->draw_crackers(&draw_at);
 
   cairo_destroy(cr);
   cairo_surface_destroy(surface);
