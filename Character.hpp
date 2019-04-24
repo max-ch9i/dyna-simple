@@ -6,10 +6,10 @@
 
 class Character
 {
-  int speed = 1;
   unsigned char state = 0x0;
 
   protected:
+    int speed = 1;
     XY pos;
     COLOUR draw_colour = COLOUR::WHITE;
 

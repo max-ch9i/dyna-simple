@@ -79,7 +79,8 @@ struct DrawSquareAt
   };
 };
 
-OBJECT tile_at(const OBJECT* map_mat, int map_width, XY coord);
+OBJECT tile_at(const OBJECT* map_mat, int map_width, int map_height, XY coord);
+XY pos_by_dir(const XY& pos, DIRE dir,int speed);
 
 typedef void (*MapProc)(const XY&);
 

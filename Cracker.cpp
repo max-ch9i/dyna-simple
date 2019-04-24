@@ -97,7 +97,7 @@ void Cracker::update_blast()
   {
     // North
     XY pos_next{pos.x,pos.y - i};
-    OBJECT t = tile_at(map, map_width, pos_next);
+    OBJECT t = tile_at(map, map_width, map_height, pos_next);
     if ((spread & SPREAD_N))
     {
       if (pos_next.y >= 0 && (_ == t || D == t))
@@ -112,7 +112,7 @@ void Cracker::update_blast()
 
     // South
     pos_next = {pos.x,pos.y + i};
-    t = tile_at(map, map_width, pos_next);
+    t = tile_at(map, map_width, map_height, pos_next);
     if ((spread & SPREAD_S))
     {
       if (pos_next.y < map_height && (_ == t || D == t))
@@ -127,7 +127,7 @@ void Cracker::update_blast()
 
     // West
     pos_next = {pos.x-i,pos.y};
-    t = tile_at(map, map_width, pos_next);
+    t = tile_at(map, map_width, map_height, pos_next);
     if ((spread & SPREAD_W))
     {
       if (pos_next.x >= 0 && (_ == t || D == t))
@@ -142,7 +142,7 @@ void Cracker::update_blast()
 
     // East
     pos_next = {pos.x+i,pos.y};
-    t = tile_at(map, map_width, pos_next);
+    t = tile_at(map, map_width, map_height, pos_next);
     if ((spread & SPREAD_E))
     {
       if (pos_next.x < map_width && (_ == t || D == t))

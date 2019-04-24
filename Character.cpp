@@ -10,35 +10,12 @@ void Character::move(DIRE dir)
   if (state & SLAIN)
     return;
 
-  XY next_pos(pos);
+  XY next_pos = pos_by_dir(pos, dir, speed);
 
-  switch (dir)
-  {
-    case LEFT:
-      next_pos.x -= speed;
-      break;
-    case RIGHT:
-      next_pos.x += speed;
-      break;
-    case DOWN:
-      next_pos.y += speed;
-      break;
-    case UP:
-      next_pos.y -= speed;
-      break;
-  }
+  OBJECT next_tile = tile_at(map, map_width, map_height, next_pos);
 
-  // Check map boundaries
-  if (next_pos.x >= map_width || next_pos.y >= map_height)
-  {
+  if (next_tile == B)
     return;
-  }
-  else if (next_pos.x < 0 || next_pos.y < 0)
-  {
-    return;
-  }
-
-  OBJECT next_tile = tile_at(map, map_width, next_pos);
 
   if (!is_valid_tile(next_tile))
     return;

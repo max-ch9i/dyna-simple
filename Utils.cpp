@@ -31,9 +31,41 @@ void win_choose_colour(cairo_t* cr, COLOUR c)
   }
 }
 
-OBJECT tile_at(const OBJECT* map_mat, int map_width, XY coord)
+OBJECT tile_at(const OBJECT* map_mat, int map_width, int map_height, XY coord)
 {
+  if (coord.x >= map_width || coord.y >= map_height)
+  {
+    return B;
+  }
+  else if (coord.x < 0 || coord.y < 0)
+  {
+    return B;
+  }
+
   return map_mat[coord.y * map_width + coord.x];
+}
+
+XY pos_by_dir(const XY& pos, DIRE dir,int speed = 1)
+{
+  XY next_pos(pos);
+
+  switch (dir)
+  {
+    case LEFT:
+      next_pos.x -= speed;
+      break;
+    case RIGHT:
+      next_pos.x += speed;
+      break;
+    case DOWN:
+      next_pos.y += speed;
+      break;
+    case UP:
+      next_pos.y -= speed;
+      break;
+  }
+
+  return next_pos;
 }
 
 void swap_tile_to(OBJECT* map_mat, int map_width, const XY& p, OBJECT swap_to)

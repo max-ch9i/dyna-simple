@@ -6,6 +6,7 @@
 
 class Balloon : public Character
 {
+  friend class AI_Balloon;
   public:
     Balloon(XY starting_position);
 

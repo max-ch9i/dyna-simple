@@ -13,6 +13,7 @@
 #include "Utils.hpp"
 #include "Dyna.hpp"
 #include "Balloon.hpp"
+#include "AI_Balloon.hpp"
 #include "Game.hpp"
 
 using namespace std;
@@ -124,6 +125,7 @@ int main()
 
   Dyna dyna(XY{0,3});
   Balloon balloon(XY{2,0});
+  AI_Balloon ai(&balloon);
 
   Game game(&dyna);
   game.add_critter(&balloon);
@@ -154,6 +156,9 @@ int main()
 
           auto start = std::chrono::high_resolution_clock::now();
 
+          // Move balloon
+          ai.move();
+          // END::Move balloon
 
           if (kev->keycode == quit_code) {
             quit = true;
@@ -183,6 +188,7 @@ int main()
 
             dyna = Dyna(XY{0,3});
             balloon = Balloon(XY{2,0});
+            ai.assign(&balloon);
 
             game = Game(&dyna);
             game.add_critter(&balloon);
