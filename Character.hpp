@@ -21,6 +21,7 @@ class Character
     bool check_collision_with_coord(const XY& _p) const;
     virtual void draw(DrawSquareAt* context) const;
     virtual void slay();
+    virtual bool is_slain() const;
     void report();
 
   private:

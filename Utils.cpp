@@ -1,16 +1,5 @@
 #include "Utils.hpp"
 
-const int map_width = 5;
-const int map_height = 5;
-OBJECT _map[map_width * map_height] = {
-	  _,   _,   _,   _,   D,
-	  _,   W,   _,   W,   _,
-	  _,   D,   _,   _,   _,
-	  _,   W,   D,   W,   _,
-	  _,   _,   _,   _,   _,
-};
-OBJECT* map = _map;
-
 void win_choose_colour(cairo_t* cr, COLOUR c)
 {
   switch(c)
@@ -55,4 +44,12 @@ void swap_tile_to(OBJECT* map_mat, int map_width, const XY& p, OBJECT swap_to)
 void incinerate_wall_at(const XY& p)
 {
   swap_tile_to(map, map_width, p, _);
+}
+
+void set_up_map(const OBJECT* src, OBJECT* dest, int map_width, int map_height)
+{
+  for (int i = 0, length = map_width * map_height; i < length; ++i)
+  {
+    dest[i] = src[i];
+  }
 }

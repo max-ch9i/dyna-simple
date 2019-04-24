@@ -71,6 +71,11 @@ void Character::slay()
   state |= SLAIN;
 }
 
+bool Character::is_slain() const
+{
+  return state & SLAIN;
+}
+
 void Character::report()
 {
   if (state & SLAIN)

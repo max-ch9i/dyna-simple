@@ -55,6 +55,7 @@ extern const int map_height;
 extern OBJECT* map;
 
 void win_choose_colour(cairo_t* cr, COLOUR c);
+void set_up_map(const OBJECT* src, OBJECT* dest, int map_width, int map_height);
 
 typedef struct win {
     Display *dpy;

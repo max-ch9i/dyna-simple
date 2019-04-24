@@ -5,6 +5,7 @@
 #include <cmath>
 #include <stdlib.h>
 #include <memory>
+#include <chrono>
 
 #include <cairo/cairo.h>
 #include <cairo/cairo-xlib.h>
@@ -99,8 +100,17 @@ static void win_draw(win_t *win, Game* game)
   XFlush(win->dpy);
 }
 
-#include <chrono>
+const int map_width = 5;
+const int map_height = 5;
 
+OBJECT* map = new OBJECT[map_width * map_height];
+OBJECT _map[map_width * map_height] = {
+	  _,   _,   _,   _,   D,
+	  _,   W,   _,   W,   _,
+	  _,   D,   _,   _,   _,
+	  _,   W,   D,   W,   _,
+	  _,   _,   _,   _,   _,
+};
 
 int main()
 {
@@ -110,6 +120,7 @@ int main()
 
   win_init(&win);
 
+  set_up_map(_map, map, map_width, map_height);
 
   Dyna dyna(XY{0,3});
   Balloon balloon(XY{2,0});
@@ -126,6 +137,7 @@ int main()
   KeyCode up_code = XKeysymToKeycode(win.dpy, XStringToKeysym("W"));
   KeyCode down_code = XKeysymToKeycode(win.dpy, XStringToKeysym("S"));
   KeyCode crack_code = XKeysymToKeycode(win.dpy, XStringToKeysym("J"));
+  KeyCode restart_code = XKeysymToKeycode(win.dpy, XStringToKeysym("T"));
 
   while (true)
   {
@@ -165,6 +177,15 @@ int main()
             {
               game.add_cracker(cracker_pos);
             }
+          }
+          else if (kev->keycode == restart_code) {
+            set_up_map(_map, map, map_width, map_height);
+
+            dyna = Dyna(XY{0,3});
+            balloon = Balloon(XY{2,0});
+
+            game = Game(&dyna);
+            game.add_critter(&balloon);
           }
 
           game.tick_crackers();
