@@ -10,6 +10,7 @@ class Character
 
   protected:
     int speed = 1;
+    XY prev_pos;
     XY pos;
     COLOUR draw_colour = COLOUR::WHITE;
 

@@ -20,6 +20,7 @@ void Character::move(DIRE dir)
   if (!is_valid_tile(next_tile))
     return;
 
+  prev_pos = pos;
   pos = next_pos;
 }
 
@@ -30,6 +31,10 @@ void Character::OutPos() const
 
 bool Character::check_collision_with(const Character* ch)
 {
+  if (prev_pos.x == ch->pos.x && prev_pos.y == ch->pos.y
+      && pos.x == ch->prev_pos.x && pos.y == ch->prev_pos.y)
+    return true;
+
   return ch->pos.x == pos.x && ch->pos.y == pos.y;
 }
 
