@@ -106,13 +106,6 @@ const int map_width = 5;
 const int map_height = 5;
 
 OBJECT* map = new OBJECT[map_width * map_height];
-OBJECT _map[map_width * map_height] = {
-	  _,   _,   D,   _,   D,
-	  _,   W,   _,   W,   _,
-	  D,   D,   _,   _,   _,
-	  _,   W,   D,   W,   _,
-	  _,   _,   _,   _,   _,
-};
 
 int main()
 {
@@ -122,10 +115,10 @@ int main()
 
   win_init(&win);
 
-  set_up_map(_map, map, map_width, map_height);
+  generate_map(map, map_width, map_height);
 
   Dyna dyna(XY{0,0});
-  Balloon balloon(XY{2,1});
+  Balloon balloon = Balloon(choose_balloon_coord(map, map_width, map_height));
   AI_Balloon ai(&balloon);
 
   Game game(&dyna);
@@ -185,7 +178,6 @@ int main()
             }
           }
           else if (kev->keycode == restart_code) {
-            // set_up_map(_map, map, map_width, map_height);
             generate_map(map, map_width, map_height);
 
             dyna = Dyna(XY{0,0});
