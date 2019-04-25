@@ -13,8 +13,9 @@ SOURCES = main.cpp \
 					Game.cpp \
 					Utils.cpp \
 					AI_Balloon.cpp \
+					map_generator.cpp
 
-main: main.o Dyna.o Cracker.o Balloon.o Character.o Game.o Utils.o AI_Balloon.o
+main: main.o Dyna.o Cracker.o Balloon.o Character.o Game.o Utils.o AI_Balloon.o map_generator.o
 
 .PHONY: clean
 clean:

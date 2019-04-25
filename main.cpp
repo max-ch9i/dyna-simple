@@ -15,6 +15,7 @@
 #include "Balloon.hpp"
 #include "AI_Balloon.hpp"
 #include "Game.hpp"
+#include "map_generator.hpp"
 
 using namespace std;
 
@@ -123,7 +124,7 @@ int main()
 
   set_up_map(_map, map, map_width, map_height);
 
-  Dyna dyna(XY{0,1});
+  Dyna dyna(XY{0,0});
   Balloon balloon(XY{2,1});
   AI_Balloon ai(&balloon);
 
@@ -184,9 +185,10 @@ int main()
             }
           }
           else if (kev->keycode == restart_code) {
-            set_up_map(_map, map, map_width, map_height);
+            // set_up_map(_map, map, map_width, map_height);
+            generate_map(map, map_width, map_height);
 
-            dyna = Dyna(XY{0,1});
+            dyna = Dyna(XY{0,0});
             balloon = Balloon(XY{2,1});
             ai.assign(&balloon);
 
