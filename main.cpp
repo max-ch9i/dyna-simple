@@ -133,13 +133,13 @@ int main()
   int tick = 0;
   bool quit = false;
   XEvent xev;
-  KeyCode quit_code = XKeysymToKeycode(win.dpy, XStringToKeysym("Q"));
+  KeyCode quit_code = XKeysymToKeycode(win.dpy, XStringToKeysym("T"));
   KeyCode right_code = XKeysymToKeycode(win.dpy, XStringToKeysym("D"));
   KeyCode left_code = XKeysymToKeycode(win.dpy, XStringToKeysym("A"));
   KeyCode up_code = XKeysymToKeycode(win.dpy, XStringToKeysym("W"));
   KeyCode down_code = XKeysymToKeycode(win.dpy, XStringToKeysym("S"));
   KeyCode crack_code = XKeysymToKeycode(win.dpy, XStringToKeysym("J"));
-  KeyCode restart_code = XKeysymToKeycode(win.dpy, XStringToKeysym("T"));
+  KeyCode restart_code = XKeysymToKeycode(win.dpy, XStringToKeysym("Q"));
 
   while (true)
   {

@@ -10,6 +10,7 @@ class AI_Balloon
   DIRE dir;
 
   void choose_new_dir();
+  bool check_if_only_direction();
   public:
     AI_Balloon(Balloon* _b):dir(LEFT)
     {
