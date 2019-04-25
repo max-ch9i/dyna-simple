@@ -61,3 +61,34 @@ void generate_map(OBJECT* dest, int map_width, int map_height)
 
   delete[] _map;
 }
+
+XY choose_balloon_coord(const OBJECT* map, int map_width, int map_height)
+{
+  for (int y = 0; y < map_height; ++y)
+  {
+    for (int x = 0; x < map_width; ++x)
+    {
+      if (map_stage_one_mask[y * CORNER_WIDTH + x] == 1)
+        continue;
+
+      if (map[y * map_width + x] == _)
+      {
+        int probability = 100 * (y * map_width + x) / (map_width * map_height);
+        bool put_balloon = (rand() % 100) < probability;
+
+        if (put_balloon)
+          return XY{x,y};
+      }
+    }
+  }
+  // place in the last empty then
+  for (int y = map_height - 1; y >= 0; --y)
+  {
+    for (int x = map_width - 1; x >= 0; --x)
+    {
+      if (map[y * map_width + x] == _)
+        return XY{x,y};
+    }
+  }
+  return XY{map_width-1, map_height-1};
+}

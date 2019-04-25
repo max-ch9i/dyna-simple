@@ -189,7 +189,7 @@ int main()
             generate_map(map, map_width, map_height);
 
             dyna = Dyna(XY{0,0});
-            balloon = Balloon(XY{2,1});
+            balloon = Balloon(choose_balloon_coord(map, map_width, map_height));
             ai.assign(&balloon);
 
             game = Game(&dyna);
