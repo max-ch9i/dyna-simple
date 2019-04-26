@@ -21,6 +21,7 @@ class Cracker : public Character
   int blast = 0;
   SPREAD spread;
   std::vector<XY> blast_cells;
+  friend SAVE_STATE;
 
   public:
     Cracker(XY starting_position);

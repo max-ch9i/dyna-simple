@@ -12,6 +12,7 @@ class Game
   std::vector<Character*> critters;
   std::vector<Cracker> crackers;
   Dyna* dyna;
+  friend SAVE_STATE;
 
   public:
     Game(Dyna* d);

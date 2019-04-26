@@ -50,6 +50,14 @@ enum OBJECT
 
 #define TILE_WIDTH 100
 
+#define SAVE_STATE void save_state( \
+      const OBJECT* map, \
+      int map_width, \
+      int map_height, \
+      const Character* dyna, \
+      const Character* balloon, \
+      const Game* game)
+
 extern const int map_width;
 extern const int map_height;
 extern OBJECT* map;

@@ -133,7 +133,8 @@ int main()
       map_width,
       map_height,
       &dyna,
-      &balloon);
+      &balloon,
+      &game);
 
   int tick = 0;
   bool quit = false;
@@ -146,7 +147,7 @@ int main()
   KeyCode crack_code = XKeysymToKeycode(win.dpy, XStringToKeysym("J"));
   KeyCode restart_code = XKeysymToKeycode(win.dpy, XStringToKeysym("Q"));
 
-  while (false)
+  while (true)
   {
     if (quit)
     {
@@ -170,17 +171,22 @@ int main()
           }
           else if (kev->keycode == right_code) {
             dyna.move(RIGHT);
+            save_action(RIGHT);
           }
           else if (kev->keycode == left_code) {
             dyna.move(LEFT);
+            save_action(LEFT);
           }
           else if (kev->keycode == up_code) {
             dyna.move(UP);
+            save_action(UP);
           }
           else if (kev->keycode == down_code) {
             dyna.move(DOWN);
+            save_action(DOWN);
           }
           else if (kev->keycode == crack_code) {
+            // TODO: action to plant a cracker
             XY cracker_pos;
             bool cracker_available = dyna.place_cracker(cracker_pos);
             if (cracker_available)
@@ -189,6 +195,9 @@ int main()
             }
           }
           else if (kev->keycode == restart_code) {
+            // TODO: outcome terminate
+            end_game();
+
             generate_map(map, map_width, map_height);
 
             dyna = Dyna(XY{0,0});
@@ -197,6 +206,14 @@ int main()
 
             game = Game(&dyna);
             game.add_critter(&balloon);
+
+            start_game(map_width, map_height);
+            save_state(map,
+                map_width,
+                map_height,
+                &dyna,
+                &balloon,
+                &game);
           }
 
           game.tick_crackers();
@@ -205,6 +222,12 @@ int main()
 
           // Save the state to the buffer
           // file handler
+          save_state(map,
+              map_width,
+              map_height,
+              &dyna,
+              &balloon,
+              &game);
 
           auto end = std::chrono::high_resolution_clock::now();
           auto dur = end - start;
@@ -225,6 +248,8 @@ int main()
     }
   }
   cout << "Total number of ticks: " << tick << endl;
+
+  end_game();
 
   win_deinit(&win);
 

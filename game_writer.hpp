@@ -16,12 +16,8 @@ class _wrong_game_data: public std::exception
 };
 
 void start_game(int map_width, int map_height);
+void save_action(DIRE dr);
 void end_game();
-void save_state(
-    const OBJECT* map,
-    int map_width,
-    int map_height,
-    const Character* dyna,
-    const Character* balloon);
+SAVE_STATE;
 
 #endif /* end of include guard: GAME_WRITER_H */

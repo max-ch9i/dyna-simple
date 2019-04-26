@@ -19,9 +19,25 @@
  * 1 byte cell state
  * ...
  */
+
+/**
+ * <cell state>
+ *
+ * 2 bit cell type
+ * 2 bit dyna
+ * 1 bit balloon
+ * 1 bit cracker pos
+ * 1 bit blast pos
+ * ...
+ */
 void start_game(int map_width, int map_height)
 {
-  open_file();
+  using namespace std::chrono;
+  unsigned long ms = duration_cast< milliseconds >(
+      system_clock::now().time_since_epoch()
+      ).count();
+  std::string file_name = "rep_" + std::to_string(ms) + ".txt";
+  open_file(file_name.c_str());
   write_2_byte(0x5944);
   write_2_byte(0x414E);
   write_2_byte(map_width);
@@ -59,12 +75,23 @@ static char character_to_char()
   return 0x1 << 4;
 }
 
+static char cracker_to_char()
+{
+  return 0x1 << 5;
+}
+
+static char blast_to_char()
+{
+  return 0x1 << 6;
+}
+
 void save_state(
     const OBJECT* map,
     int map_width,
     int map_height,
     const Character* dyna,
-    const Character* balloon)
+    const Character* balloon,
+    const Game* game)
 {
   int length = map_width * map_height;
   char* buff = new char[length];
@@ -75,10 +102,46 @@ void save_state(
     buff[i] = tile_to_char(map[i]);
   }
 
+  // Add the dyna
   buff[map_width * dyna->pos.y + dyna->pos.x] |= dyna_to_char(dyna);
+
+  // Add the balloon
+  buff[map_width * balloon->pos.y + balloon->pos.x] |= character_to_char();
+
+  // Add a cracker and blast cells
+  for (const Cracker& c : game->crackers )
+  {
+    buff[map_width * c.pos.y + c.pos.x] |= cracker_to_char();
+    for (const XY& b : c.blast_cells)
+    {
+      buff[map_width * b.y + b.x] |= blast_to_char();
+    }
+  }
 
   write_buff(buff, length);
   delete[] buff;
+}
+
+void save_action(DIRE dr)
+{
+  int c;
+
+  switch(dr)
+  {
+    case UP:
+      c = 0x1;
+      break;
+    case DOWN:
+      c = 0x2;
+      break;
+    case LEFT:
+      c = 0x3;
+      break;
+    case RIGHT:
+      c = 0x4;
+      break;
+  }
+  write_1_byte(c);
 }
 
 void end_game()

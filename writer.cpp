@@ -11,9 +11,9 @@ static std::fstream _file;
 
 _wrong_data wrong_data;
 
-void open_file()
+void open_file(const char* name)
 {
-  _file.open(FILE_NAME, std::fstream::out | std::fstream::binary);
+  _file.open(name, std::fstream::out | std::fstream::binary);
 }
 
 void close_file()

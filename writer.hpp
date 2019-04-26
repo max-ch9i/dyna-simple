@@ -13,7 +13,7 @@ class _wrong_data: public std::exception
   }
 };
 
-void open_file();
+void open_file(const char* name);
 void close_file();
 void write_2_byte(int data);
 void write_1_byte(int data);
