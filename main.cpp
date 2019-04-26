@@ -16,6 +16,7 @@
 #include "AI_Balloon.hpp"
 #include "Game.hpp"
 #include "map_generator.hpp"
+#include "game_writer.hpp"
 
 using namespace std;
 
@@ -115,6 +116,7 @@ int main()
 
   win_init(&win);
 
+  srand(time(NULL));
   generate_map(map, map_width, map_height);
 
   Dyna dyna(XY{0,0});
@@ -123,6 +125,15 @@ int main()
 
   Game game(&dyna);
   game.add_critter(&balloon);
+
+  // Open a new file buffer and
+  // take the playfield snapshot
+  start_game(map_width, map_height);
+  save_state(map,
+      map_width,
+      map_height,
+      &dyna,
+      &balloon);
 
   int tick = 0;
   bool quit = false;
@@ -135,7 +146,7 @@ int main()
   KeyCode crack_code = XKeysymToKeycode(win.dpy, XStringToKeysym("J"));
   KeyCode restart_code = XKeysymToKeycode(win.dpy, XStringToKeysym("Q"));
 
-  while (true)
+  while (false)
   {
     if (quit)
     {
@@ -191,6 +202,9 @@ int main()
           game.tick_crackers();
           game.check_collisions();
           ++tick;
+
+          // Save the state to the buffer
+          // file handler
 
           auto end = std::chrono::high_resolution_clock::now();
           auto dur = end - start;

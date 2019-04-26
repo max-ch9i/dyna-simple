@@ -7,6 +7,12 @@
 class Character
 {
   unsigned char state = 0x0;
+  friend void save_state(
+      const OBJECT* map,
+      int map_width,
+      int map_height,
+      const Character* dyna,
+      const Character* balloon);
 
   protected:
     int speed = 1;
