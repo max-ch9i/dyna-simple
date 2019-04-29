@@ -186,12 +186,12 @@ int main()
             save_action(MOVE_DOWN);
           }
           else if (kev->keycode == crack_code) {
+            save_action(PLANT_CRACKER);
             XY cracker_pos;
             bool cracker_available = dyna.place_cracker(cracker_pos);
             if (cracker_available)
             {
               game.add_cracker(cracker_pos);
-              save_action(PLAN_CRACKER);
             }
           }
 
@@ -209,7 +209,10 @@ int main()
           else if (tick >= 100)
             outcome = DEFEAT;
           else if (kev->keycode == restart_code)
+          {
             outcome = RESTART;
+            save_action(OTHER);
+          }
 
           if (outcome != PENDING) {
             save_outcome(outcome);

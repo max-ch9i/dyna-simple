@@ -84,6 +84,20 @@ void read_last_2_chars(int* data)
   int current_pos = _file.tellg();
 
   _file.seekg(-2, _file.end);
+  _file.tellg();
   read_2_byte(data);
   _file.seekg(current_pos, _file.beg);
+}
+
+void get_file_pos(int* cur_pos)
+{
+  (*cur_pos) = _file.tellg();
+}
+
+void get_file_end(int* end_pos)
+{
+  int cur_pos = _file.tellg();
+  _file.seekg(0, _file.end);
+  (*end_pos) = _file.tellg();
+  _file.seekg(cur_pos, _file.beg);
 }

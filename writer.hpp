@@ -24,5 +24,7 @@ void read_2_byte(int* data);
 void read_1_byte(int* data);
 void read_buff(char* buff, int len);
 void read_last_2_chars(int* data);
+void get_file_pos(int* cur_pos);
+void get_file_end(int* end_pos);
 
 #endif /* end of include guard: WRITER_H */

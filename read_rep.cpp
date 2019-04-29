@@ -12,16 +12,51 @@ int main(int argc, char** argv)
   int map_width = 0;
   int map_height = 0;
   OBJECT* map = nullptr;
+  XY dyna;
+  XY balloon;
 
   try {
     OUTCOME outcome;
-    load_game(file_name, map, &map_width, &map_height, &outcome);
+    ACTION action;
+    load_game(file_name, &map_width, &map_height, &outcome);
+
     std::cout << map_width << " " << map_height << std::endl;
+    std::cout << "Outcome: " << outcome << std::endl;
+    std::cout << std::endl;
+
+    map = new OBJECT[map_width * map_height];
+
+    while(read_state(&dyna, &balloon, &action, map, map_width, map_height))
+    {
+      // Paint the map
+      for (int y = 0; y < map_height; ++y)
+      {
+        for (int x = 0; x < map_width; ++x)
+        {
+          int p = y * map_width + x;
+
+          if (dyna.x == x && dyna.y == y)
+            std::cout << "D" << " ";
+          else if (balloon.x == x && balloon.y == y)
+            std::cout << "B" << " ";
+          else
+            std::cout << map[p] << " ";
+
+          if (x == map_width - 1)
+            std::cout << std::endl;
+        }
+      }
+
+      std::cout << "Action: " << action << std::endl;
+      std::cout << std::endl;
+    }
   }
   catch(const _wrong_game_data_read& e)
   {
     std::cout << "Error: " << e.what() << std::endl;
   }
 
+
+  delete[] map;
   close_game();
 }

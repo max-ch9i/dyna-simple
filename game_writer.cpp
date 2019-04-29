@@ -142,8 +142,11 @@ void save_action(ACTION dr)
     case MOVE_RIGHT:
       c = 0x4;
       break;
-    case PLAN_CRACKER:
+    case PLANT_CRACKER:
       c = 0x5;
+      break;
+    case OTHER:
+      c = 0x6;
       break;
   }
   write_1_byte(c);

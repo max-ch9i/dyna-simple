@@ -23,7 +23,9 @@ class _wrong_game_data_read: public std::exception
     }
 };
 
-void load_game(char* file_name, OBJECT* map, int* map_width, int* map_height, OUTCOME* outcome);
+void load_game(char* file_name, int* map_width, int* map_height, OUTCOME* outcome);
+bool read_state(XY* dyna, XY* balloon, ACTION* action, OBJECT* map, int map_width, int map_height);
+void read_action(ACTION* act);
 void close_game();
 
 #endif /* end of include guard: GAME_READER_H */
