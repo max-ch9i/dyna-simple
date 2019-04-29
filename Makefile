@@ -15,9 +15,14 @@ SOURCES = main.cpp \
 					AI_Balloon.cpp \
 					map_generator.cpp \
 					writer.cpp \
-					game_writer.cpp
+					game_writer.cpp \
+					game_reader.cpp \
+					read_rep.cpp
 
 main: main.o Dyna.o Cracker.o Balloon.o Character.o Game.o Utils.o AI_Balloon.o map_generator.o writer.o game_writer.o
+
+read: read_rep.o writer.o game_reader.o
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 .PHONY: clean
 clean:

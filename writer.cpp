@@ -16,6 +16,11 @@ void open_file(const char* name)
   _file.open(name, std::fstream::out | std::fstream::binary);
 }
 
+void open_file_read(const char* name)
+{
+  _file.open(name, std::fstream::in | std::fstream::binary);
+}
+
 void close_file()
 {
   _file.close();
@@ -48,4 +53,28 @@ void write_2_byte(int data)
   buff[1] = _data >> 8;
 
   _file.write(buff, 2);
+}
+
+void read_1_byte(int* data)
+{
+  char buff;
+
+  _file.read(&buff, 1);
+
+  (*data) = buff;
+}
+
+void read_buff(char* buff, int len)
+{
+  _file.read(buff, len);
+}
+
+void read_2_byte(int* data)
+{
+  char buff[2];
+
+  _file.read(buff, 2);
+
+  (*data) = buff[0];
+  (*data) |= buff[1] << 8;
 }
