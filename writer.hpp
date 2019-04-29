@@ -23,5 +23,6 @@ void write_buff(char* buff, int len);
 void read_2_byte(int* data);
 void read_1_byte(int* data);
 void read_buff(char* buff, int len);
+void read_last_2_chars(int* data);
 
 #endif /* end of include guard: WRITER_H */

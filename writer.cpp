@@ -78,3 +78,12 @@ void read_2_byte(int* data)
   (*data) = buff[0];
   (*data) |= buff[1] << 8;
 }
+
+void read_last_2_chars(int* data)
+{
+  int current_pos = _file.tellg();
+
+  _file.seekg(-2, _file.end);
+  read_2_byte(data);
+  _file.seekg(current_pos, _file.beg);
+}

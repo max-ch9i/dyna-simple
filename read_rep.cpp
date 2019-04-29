@@ -14,7 +14,8 @@ int main(int argc, char** argv)
   OBJECT* map = nullptr;
 
   try {
-    load_game(file_name, map, &map_width, &map_height);
+    OUTCOME outcome;
+    load_game(file_name, map, &map_width, &map_height, &outcome);
     std::cout << map_width << " " << map_height << std::endl;
   }
   catch(const _wrong_game_data_read& e)

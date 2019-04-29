@@ -23,7 +23,7 @@ class _wrong_game_data_read: public std::exception
     }
 };
 
-void load_game(char* file_name, OBJECT* map, int* map_width, int* map_height);
+void load_game(char* file_name, OBJECT* map, int* map_width, int* map_height, OUTCOME* outcome);
 void close_game();
 
 #endif /* end of include guard: GAME_READER_H */

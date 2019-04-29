@@ -1,7 +1,10 @@
 #include "writer.hpp"
 #include "game_reader.hpp"
+#include <iostream>
 
-void load_game(char* file_name, OBJECT* map, int* map_width, int* map_height)
+static OUTCOME read_outcome(int data);
+
+void load_game(char* file_name, OBJECT* map, int* map_width, int* map_height, OUTCOME* outcome)
 {
   open_file_read(file_name);
   int a, b;
@@ -22,6 +25,34 @@ void load_game(char* file_name, OBJECT* map, int* map_width, int* map_height)
   }
   *map_width = a;
   *map_height = b;
+
+  // Get the outcome
+  read_last_2_chars(&a);
+  *outcome = read_outcome(a);
+}
+
+static OUTCOME read_outcome(int data)
+{
+  if ((data >> 8) != 0x7F)
+  {
+    throw _wrong_game_data_read("Invalid outcome value");
+  }
+
+  int c = data & 0x00FF;
+
+  switch(c)
+  {
+    case 0x1:
+      return VICTORY;
+    case 0x2:
+      return DEFEAT;
+    case 0x3:
+      return RESTART;
+    case 0x4:
+      return PENDING;
+    default:
+      throw _wrong_game_data_read("Invalid outcome value");
+  }
 }
 
 void close_game()
