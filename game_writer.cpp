@@ -10,6 +10,8 @@
  * <playground>
  * 1 byte action
  * ...
+ * <playground>
+ * 1 byte action
  * 2 byte outcome <victory|defeat|timeout>
  */
 
