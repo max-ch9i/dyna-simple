@@ -228,6 +228,7 @@ int main()
             game.add_critter(&balloon);
 
             start_game(map_width, map_height);
+            tick = 0;
           }
 
           // Save the state to the buffer
