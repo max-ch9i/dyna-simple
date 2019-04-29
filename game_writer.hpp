@@ -16,7 +16,8 @@ class _wrong_game_data: public std::exception
 };
 
 void start_game(int map_width, int map_height);
-void save_action(DIRE dr);
+void save_action(ACTION dr);
+void save_outcome(OUTCOME out);
 void end_game();
 SAVE_STATE;
 

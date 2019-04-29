@@ -30,6 +30,8 @@ class Game
     void draw_crackers(DrawSquareAt* draw);
     void draw_dyna(DrawSquareAt* draw);
 
+    bool critters_left() const;
+
   private:
     void check_critter_collisions();
     void check_cracker_collisions();

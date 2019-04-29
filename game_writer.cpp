@@ -10,7 +10,7 @@
  * <playground>
  * 1 byte action
  * ...
- * 1 byte outcome <victory|defeat|timeout>
+ * 2 byte outcome <victory|defeat|timeout>
  */
 
 /**
@@ -122,26 +122,52 @@ void save_state(
   delete[] buff;
 }
 
-void save_action(DIRE dr)
+void save_action(ACTION dr)
 {
   int c;
 
   switch(dr)
   {
-    case UP:
+    case MOVE_UP:
       c = 0x1;
       break;
-    case DOWN:
+    case MOVE_DOWN:
       c = 0x2;
       break;
-    case LEFT:
+    case MOVE_LEFT:
       c = 0x3;
       break;
-    case RIGHT:
+    case MOVE_RIGHT:
       c = 0x4;
+      break;
+    case PLAN_CRACKER:
+      c = 0x5;
       break;
   }
   write_1_byte(c);
+}
+
+void save_outcome(OUTCOME out)
+{
+  int c = 0x7F00;
+
+  switch(out)
+  {
+    case VICTORY:
+      c |= 0x1;
+      break;
+    case DEFEAT:
+      c |= 0x2;
+      break;
+    case RESTART:
+      c |= 0x3;
+      break;
+    case PENDING:
+      c |= 0x4;
+      break;
+  }
+
+  write_2_byte(c);
 }
 
 void end_game()

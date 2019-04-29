@@ -91,3 +91,8 @@ void Game::check_wall_collisions()
     cracker.blast_collide_(incinerate_wall_at);
   }
 }
+
+bool Game::critters_left() const
+{
+  return !critters.empty();
+}

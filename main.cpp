@@ -171,31 +171,48 @@ int main()
           }
           else if (kev->keycode == right_code) {
             dyna.move(RIGHT);
-            save_action(RIGHT);
+            save_action(MOVE_RIGHT);
           }
           else if (kev->keycode == left_code) {
             dyna.move(LEFT);
-            save_action(LEFT);
+            save_action(MOVE_LEFT);
           }
           else if (kev->keycode == up_code) {
             dyna.move(UP);
-            save_action(UP);
+            save_action(MOVE_UP);
           }
           else if (kev->keycode == down_code) {
             dyna.move(DOWN);
-            save_action(DOWN);
+            save_action(MOVE_DOWN);
           }
           else if (kev->keycode == crack_code) {
-            // TODO: action to plant a cracker
             XY cracker_pos;
             bool cracker_available = dyna.place_cracker(cracker_pos);
             if (cracker_available)
             {
               game.add_cracker(cracker_pos);
+              save_action(PLAN_CRACKER);
             }
           }
-          else if (kev->keycode == restart_code) {
-            // TODO: outcome terminate
+
+          game.tick_crackers();
+          game.check_collisions();
+          ++tick;
+
+          // Check the outcome
+          OUTCOME outcome = PENDING;
+
+          if (dyna.is_slain())
+            outcome = DEFEAT;
+          else if (!game.critters_left())
+            outcome = VICTORY;
+          else if (tick >= 100)
+            outcome = DEFEAT;
+          else if (kev->keycode == restart_code)
+            outcome = RESTART;
+
+          if (outcome != PENDING) {
+            save_outcome(outcome);
             end_game();
 
             generate_map(map, map_width, map_height);
@@ -208,17 +225,7 @@ int main()
             game.add_critter(&balloon);
 
             start_game(map_width, map_height);
-            save_state(map,
-                map_width,
-                map_height,
-                &dyna,
-                &balloon,
-                &game);
           }
-
-          game.tick_crackers();
-          game.check_collisions();
-          ++tick;
 
           // Save the state to the buffer
           // file handler

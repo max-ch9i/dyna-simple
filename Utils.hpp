@@ -38,6 +38,23 @@ enum OBJECT
   B // Boundary
 };
 
+enum ACTION
+{
+  MOVE_LEFT,
+  MOVE_RIGHT,
+  MOVE_UP,
+  MOVE_DOWN,
+  PLAN_CRACKER
+};
+
+enum OUTCOME
+{
+  PENDING,
+  VICTORY,
+  DEFEAT,
+  RESTART
+};
+
 #define SLAIN 0x1
 
 #define TIMEOUT 0x1
